@@ -1,7 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import './App.scss';
-import { useEffect } from 'react';
-import { render } from 'react-dom';
 
 function getRandomName(): string {
   const value = Date.now().toString().slice(-4);
@@ -17,19 +15,19 @@ interface AppState {
 
 export class App extends React.Component<{}, AppState> {
   private timeIntervalId: number | undefined;
+
   private nameIntervalId: number | undefined;
 
-  constructor(props: {}) {
-    super(props);
-    this.state = {
-      currentTime: new Date(),
-      clockName: 'Clock-0',
-      hasClock: true,
-    };
-  }
+  state = {
+    currentTime: new Date(),
+    clockName: 'Clock-0',
+    hasClock: true,
+  };
+
   componentDidMount() {
     this.timeIntervalId = window.setInterval(() => {
       const newTime = new Date();
+
       this.setState({ currentTime: newTime });
       // eslint-disable-next-line no-console
       console.log(newTime.toUTCString().slice(-12, -4));
@@ -37,6 +35,7 @@ export class App extends React.Component<{}, AppState> {
 
     this.nameIntervalId = window.setInterval(() => {
       const prevName = this.state.clockName;
+
       this.setState({ clockName: getRandomName() }, () => {
         // eslint-disable-next-line no-console
         console.log(`Renamed from ${prevName} to ${this.state.clockName}`);
@@ -47,9 +46,6 @@ export class App extends React.Component<{}, AppState> {
   }
 
   componentWillUnmount() {
-    if (this.nameIntervalId) {
-      clearInterval(this.nameIntervalId);
-    }
     document.removeEventListener('contextmenu', this.hideClock);
     document.removeEventListener('click', this.showClock);
   }
@@ -60,6 +56,10 @@ export class App extends React.Component<{}, AppState> {
     if (this.timeIntervalId) {
       clearInterval(this.timeIntervalId);
     }
+
+    if (this.nameIntervalId) {
+      clearInterval(this.nameIntervalId);
+    }
   };
 
   showClock = (event: MouseEvent) => {
@@ -67,13 +67,25 @@ export class App extends React.Component<{}, AppState> {
     this.setState({ hasClock: true });
     this.timeIntervalId = window.setInterval(() => {
       const newTime = new Date();
+
       this.setState({ currentTime: newTime });
+      // eslint-disable-next-line no-console
       console.log(newTime.toUTCString().slice(-12, -4));
     }, 1000);
+
+    this.nameIntervalId = window.setInterval(() => {
+      const prevName = this.state.clockName;
+
+      this.setState({ clockName: getRandomName() }, () => {
+        // eslint-disable-next-line no-console
+        console.log(`Renamed from ${prevName} to ${this.state.clockName}`);
+      });
+    }, 3300);
   };
 
   render() {
     const { clockName, currentTime, hasClock } = this.state;
+
     return hasClock ? (
       <div className="App">
         <h1>React clock</h1>
