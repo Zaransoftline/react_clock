@@ -46,13 +46,6 @@ export class App extends React.Component<{}, AppState> {
   }
 
   componentWillUnmount() {
-    document.removeEventListener('contextmenu', this.hideClock);
-    document.removeEventListener('click', this.showClock);
-  }
-
-  hideClock = (event: MouseEvent) => {
-    event.preventDefault();
-    this.setState({ hasClock: false });
     if (this.timeIntervalId) {
       clearInterval(this.timeIntervalId);
     }
@@ -60,6 +53,13 @@ export class App extends React.Component<{}, AppState> {
     if (this.nameIntervalId) {
       clearInterval(this.nameIntervalId);
     }
+    document.removeEventListener('contextmenu', this.hideClock);
+    document.removeEventListener('click', this.showClock);
+  }
+
+  hideClock = (event: MouseEvent) => {
+    event.preventDefault();
+    this.setState({ hasClock: false });
   };
 
   showClock = (event: MouseEvent) => {
